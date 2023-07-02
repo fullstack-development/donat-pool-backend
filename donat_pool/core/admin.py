@@ -20,7 +20,7 @@ class CompletedFundraisingInline(admin.TabularInline):
     readonly_fields = ["targetAmount", "raisedAmount"]
     
 class AuthorAdmin(admin.ModelAdmin):
-    readonly_fields = ["pkh",]
+    readonly_fields = ["address",]
     list_display = (
         'trusted', 
         'untrustworthy', 

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 
 class Author(models.Model):
-    pkh = models.CharField(max_length=255, primary_key=True)
+    address = models.CharField(max_length=255, primary_key=True)
     trusted = models.BooleanField(default=False)
     untrustworthy = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
