@@ -21,7 +21,7 @@ class Category(models.Model):
         SiteSettings, 
         on_delete=models.SET_NULL, 
         related_name="categories", 
-        related_query_name="categories",
+        related_query_name="category",
         blank=True, 
         null=True,
         )
