@@ -5,7 +5,7 @@ from django.db import models
 import donat_pool.core.models as core
 
 class Author(models.Model):
-    address = models.CharField(max_length=255, primary_key=True)
+    address = models.CharField(max_length=255, primary_key=True)  # TODO: rename to pkh 
     trusted = models.BooleanField(default=False)
     untrustworthy = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,7 +15,7 @@ class Author(models.Model):
         verbose_name_plural = "authors"
 
     def __str__(self):
-        return self.pkh
+        return self.address
 
 class Fundraising(models.Model):
     path = models.CharField(max_length=255, primary_key=True)

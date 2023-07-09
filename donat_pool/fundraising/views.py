@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Fundraising
+from .serializers import FundraisingSerializer
 
-# Create your views here.
+class FundraisingViewSet(viewsets.ModelViewSet):
+    queryset = Fundraising.objects.all()
+    serializer_class = FundraisingSerializer
