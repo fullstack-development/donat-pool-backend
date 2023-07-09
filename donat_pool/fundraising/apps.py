@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CoreConfig(AppConfig):
+class FundraisingConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'donat_pool.core'
+    name = 'donat_pool.fundraising'

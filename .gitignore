@@ -94,6 +94,9 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
+# VsCode
+.vscode
+
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
@@ -158,3 +161,6 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# images directory:
+images
