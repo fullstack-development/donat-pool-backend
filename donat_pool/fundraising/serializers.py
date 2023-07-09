@@ -5,7 +5,7 @@ class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
         fields = [
-            'address',
+            'pkh',
             ]
 
 class FundraisingSerializer(serializers.ModelSerializer):
@@ -23,8 +23,8 @@ class FundraisingSerializer(serializers.ModelSerializer):
             ]
     
     def create(self, validated_data):
-        author_pk = validated_data.get('author').get('address')
-        author = Author.objects.get_or_create(address=author_pk)
+        author_pk = validated_data.get('author').get('pkh')
+        author = Author.objects.get_or_create(pkh=author_pk)
         fundraising = self.Meta.model.objects.create(
             path = validated_data['path'],
             author = author[0],

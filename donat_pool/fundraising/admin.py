@@ -17,7 +17,7 @@ class CompletedFundraisingInline(admin.TabularInline):
     
 class AuthorAdmin(admin.ModelAdmin):
     list_display = (
-        'address',
+        'pkh',
         'trusted', 
         'untrustworthy', 
         'created_at',
