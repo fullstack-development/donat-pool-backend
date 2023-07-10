@@ -51,3 +51,17 @@ class Tag(models.Model):
          
     def __str__(self):
         return self.name
+
+class Feedback(models.Model):
+    contact = models.CharField(max_length=255, blank=False, null=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    message = models.TextField(blank=False, null=False)
+    processed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Contact us request"
+        verbose_name_plural = "Contact us requests"
+         
+    def __str__(self):
+        return self.name

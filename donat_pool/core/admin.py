@@ -3,6 +3,7 @@ from .models import (
     Category, 
     Tag,
     SiteSettings,
+    Feedback
 )
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -32,6 +33,15 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         TagInline,
     ]
 
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'contact',
+        'processed',
+        'created_at',
+        )
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(SiteSettings, SiteSettingsAdmin)
+admin.site.register(Feedback, FeedbackAdmin)
