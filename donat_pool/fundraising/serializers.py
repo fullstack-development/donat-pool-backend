@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import Author, Fundraising
+from .models import (
+    Author, 
+    Fundraising, 
+    CompletedFundraising,
+    )
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,3 +38,15 @@ class FundraisingSerializer(serializers.ModelSerializer):
         )
         fundraising.tags.set(validated_data['tags'])
         return fundraising
+    
+class CompletedFundraisingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompletedFundraising
+        fields = [
+            'path',
+            'author',
+            'title',
+            'targetAmount',
+            'raisedAmount',
+            'completedAt',
+            ]

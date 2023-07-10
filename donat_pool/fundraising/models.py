@@ -34,7 +34,7 @@ class Fundraising(models.Model):
         null=True,
         )
     description = models.CharField(
-        max_length=255, 
+        max_length=1000, 
         blank=True,
         null=True,
         )
@@ -62,11 +62,17 @@ class Fundraising(models.Model):
         return self.path
 
 class CompletedFundraising(models.Model):
-    fundraising = models.OneToOneField(
-        Fundraising,
-        on_delete=models.CASCADE,
-        related_name="info",
-        related_query_name="info"
+    path = models.CharField(max_length=255)
+    title = models.CharField(
+        max_length=255, 
+        blank=True,
+        null=True,
+        )
+    author = models.ForeignKey(
+        Author, 
+        on_delete=models.CASCADE, 
+        related_name="completed_fundraisings", 
+        related_query_name="completed_fundraisings",
         )
     targetAmount = models.BigIntegerField()
     raisedAmount = models.BigIntegerField()
@@ -77,4 +83,4 @@ class CompletedFundraising(models.Model):
         verbose_name_plural = "completed fundraisings"
 
     def __str__(self):
-        return self.fundraising.path
+        return self.title
