@@ -1,16 +1,23 @@
 from rest_framework import serializers
-from .models import SiteSettings, Category, Tag
+from .models import SiteSettings, Category, Tag, Feedback
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'background',]
+        fields = [
+            'id', 
+            'name', 
+            'background',
+            ]
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id', 'name',]
+        fields = [
+            'id', 
+            'name',
+            ]
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(read_only=True, many=True)
@@ -18,4 +25,18 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteSettings
-        fields = ['id', 'name', 'categories', 'tags',]
+        fields = [
+            'id', 
+            'name', 
+            'categories', 
+            'tags',
+            ]
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = [
+            'contact', 
+            'name', 
+            'message',
+            ]
