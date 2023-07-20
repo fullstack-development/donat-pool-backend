@@ -32,11 +32,15 @@ class Fundraising(models.Model):
         blank=True,
         null=True,
         )
-    description = models.CharField(
+    short_description = models.CharField(
         max_length=1000, 
         blank=True,
         null=True,
         )
+    description = models.TextField(
+        blank=True,
+        null=True,
+    )
     image = models.ImageField(
         upload_to=("images/fundraisings"), 
         blank=True, 

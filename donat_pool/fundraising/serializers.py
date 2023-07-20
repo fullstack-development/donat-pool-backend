@@ -14,6 +14,7 @@ class FundraisingSerializer(serializers.ModelSerializer):
             'path',
             'author_pkh',
             'category',
+            'short_description',
             'description',
             'image',
             'tags'
@@ -30,6 +31,7 @@ class FundraisingSerializer(serializers.ModelSerializer):
             path = validated_data['path'],
             author = author,
             category = validated_data['category'],
+            short_description = validated_data['short_description'],
             description = validated_data['description'],
             image = validated_data['image'],
         )
