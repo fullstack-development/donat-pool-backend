@@ -48,17 +48,3 @@ class CompletedFundraisingViewSet(
     search_fields = [
         'title', 
         ]
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        path = data.get('path', None)
-        serializer = self.get_serializer(data=data)
-        
-        try:
-            related_fundraising = Fundraising.objects.get(path=path)
-        except Fundraising.DoesNotExist:
-                raise Http404
-        
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)

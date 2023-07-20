@@ -5,21 +5,14 @@ from .models import (
     CompletedFundraising,
     )
 
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
-        fields = [
-            'pkh',
-            ]
-
 class FundraisingSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
+    author_pkh = serializers.CharField(source="author.pkh") 
 
     class Meta:
         model = Fundraising
         fields = [
             'path',
-            'author',
+            'author_pkh',
             'category',
             'description',
             'image',
@@ -28,10 +21,14 @@ class FundraisingSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         author_pk = validated_data.get('author').get('pkh')
-        author = Author.objects.get_or_create(pkh=author_pk)
+        author, _created = Author.objects.get_or_create(pkh=author_pk)
+        if author.untrustworthy:
+            err = "Can't create fundraising"
+            raise serializers.ValidationError(err)
+
         fundraising = self.Meta.model.objects.create(
             path = validated_data['path'],
-            author = author[0],
+            author = author,
             category = validated_data['category'],
             description = validated_data['description'],
             image = validated_data['image'],
@@ -40,13 +37,32 @@ class FundraisingSerializer(serializers.ModelSerializer):
         return fundraising
     
 class CompletedFundraisingSerializer(serializers.ModelSerializer):
+    author_pkh = serializers.CharField(source="author.pkh", read_only=True) 
+
     class Meta:
         model = CompletedFundraising
         fields = [
             'path',
-            'author',
+            'author_pkh',
             'title',
             'targetAmount',
             'raisedAmount',
             'completedAt',
             ]
+
+    def create(self, validated_data):
+        path = validated_data.get('path')
+        try:
+            fundraising = Fundraising.objects.get(pk=path)
+        except Fundraising.DoesNotExist:
+            err = "Fundraising doesn't exist"
+            raise serializers.ValidationError(err)
+        
+        closed_fundraising = self.Meta.model.objects.create(
+            path = path,
+            author = fundraising.author,
+            title = validated_data['title'],
+            targetAmount = validated_data['targetAmount'],
+            raisedAmount = validated_data['raisedAmount'],
+        )
+        return closed_fundraising

@@ -11,10 +11,6 @@ class FundraisingInline(admin.TabularInline):
     model = Fundraising
     readonly_fields = ["path",]
 
-class CompletedFundraisingInline(admin.TabularInline):
-    model = CompletedFundraising
-    readonly_fields = ["targetAmount", "raisedAmount"]
-    
 class AuthorAdmin(admin.ModelAdmin):
     list_display = (
         'pkh',
