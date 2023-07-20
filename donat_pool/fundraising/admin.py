@@ -11,10 +11,6 @@ class FundraisingInline(admin.TabularInline):
     model = Fundraising
     readonly_fields = ["path",]
 
-class CompletedFundraisingInline(admin.TabularInline):
-    model = CompletedFundraising
-    readonly_fields = ["targetAmount", "raisedAmount"]
-    
 class AuthorAdmin(admin.ModelAdmin):
     list_display = (
         'pkh',
@@ -34,7 +30,7 @@ class FundraisingAdmin(admin.ModelAdmin):
         'promoted',
         'main',
         )
-    inlines = [TagInline, CompletedFundraisingInline]
+    inlines = [TagInline]
     search_fields = ['path',]
 
 class CompletedFundraisingAdmin(admin.ModelAdmin):
@@ -43,7 +39,7 @@ class CompletedFundraisingAdmin(admin.ModelAdmin):
         'targetAmount',
         'raisedAmount',
         )
-    search_fields = ['fundraising__path',]
+    search_fields = ['author__pkh',]
 
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Fundraising, FundraisingAdmin)

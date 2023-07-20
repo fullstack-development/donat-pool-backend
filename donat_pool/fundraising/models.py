@@ -1,11 +1,10 @@
 from django.db import models
 
-from django.conf import settings
 from django.db import models
 import donat_pool.core.models as core
 
 class Author(models.Model):
-    pkh = models.CharField(max_length=255, primary_key=True)  # TODO: rename to pkh 
+    pkh = models.CharField(max_length=255, primary_key=True)
     trusted = models.BooleanField(default=False)
     untrustworthy = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -33,11 +32,15 @@ class Fundraising(models.Model):
         blank=True,
         null=True,
         )
-    description = models.CharField(
-        max_length=255, 
+    short_description = models.CharField(
+        max_length=1000, 
         blank=True,
         null=True,
         )
+    description = models.TextField(
+        blank=True,
+        null=True,
+    )
     image = models.ImageField(
         upload_to=("images/fundraisings"), 
         blank=True, 
@@ -56,17 +59,23 @@ class Fundraising(models.Model):
 
     class Meta:
         verbose_name = "fundraising"
-        verbose_name_plural = "fundraising"
+        verbose_name_plural = "fundraisings"
 
     def __str__(self):
         return self.path
 
 class CompletedFundraising(models.Model):
-    fundraising = models.OneToOneField(
-        Fundraising,
-        on_delete=models.CASCADE,
-        related_name="info",
-        related_query_name="info"
+    path = models.CharField(max_length=255, primary_key=True)
+    title = models.CharField(
+        max_length=255, 
+        blank=True,
+        null=True,
+        )
+    author = models.ForeignKey(
+        Author, 
+        on_delete=models.CASCADE, 
+        related_name="completed_fundraisings", 
+        related_query_name="completed_fundraisings",
         )
     targetAmount = models.BigIntegerField()
     raisedAmount = models.BigIntegerField()
@@ -77,4 +86,4 @@ class CompletedFundraising(models.Model):
         verbose_name_plural = "completed fundraisings"
 
     def __str__(self):
-        return self.fundraising.path
+        return self.title
