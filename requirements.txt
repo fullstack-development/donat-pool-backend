@@ -3,3 +3,4 @@ djangorestframework
 psycopg2
 Pillow
 django-filter
+gunicorn
