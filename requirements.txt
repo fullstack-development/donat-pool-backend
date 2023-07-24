@@ -1,6 +1,7 @@
 Django==4.2.2
 djangorestframework
 psycopg2
+psycopg2-binary==2.9.1
 Pillow
 django-filter
-gunicorn
+gunicorn==20.1.0

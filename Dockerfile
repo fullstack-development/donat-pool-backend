@@ -1,31 +1,35 @@
-# Use the official Python image as the base image
-FROM python:3.9
+FROM python:3.9.6-alpine
 
-# Set environment variables
+# # set work directory
+# WORKDIR /usr/src/app
+
+
+# create the appropriate directories
+ENV APP_HOME=/usr/src/app
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+WORKDIR $APP_HOME
+
+# set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Create and set the working directory in the container
-WORKDIR /app
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-       build-essential \
-       libpq-dev \
-       nginx \
-    && rm -rf /var/lib/apt/lists/*
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+# copy entrypoint.sh
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.sh
+RUN chmod +x $APP_HOME/entrypoint.sh
 
-# Copy the Django project files to the container
-COPY . /app/
+# copy project
+COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Start Gunicorn to serve the Django application
-CMD ["gunicorn", "donat_pool.wsgi:application", "--bind", "0.0.0.0:8000"]
+# run entrypoint.sh
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
