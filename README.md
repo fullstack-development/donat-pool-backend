@@ -49,7 +49,6 @@ python3 manage.py createsuperuser
 - Set `DEBUG` to 0 and generate new `SECRET_KEY`
 
 - Run `docker-compose up -d --build`
-- To rebuild backend without DB deletion: `docker-compose up -d --force-recreate --no-deps --build web`
 
 - Create django admin:
 `docker exec -ti donat-pool-backend sh`
