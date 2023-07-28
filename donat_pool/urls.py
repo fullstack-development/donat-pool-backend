@@ -21,5 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path('core/', include('donat_pool.core.urls')),
     path('fundraisings/', include('donat_pool.fundraising.urls')),
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
 ]
