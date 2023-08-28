@@ -141,3 +141,9 @@ if DEBUG:
 else:
     CORS_ALLOW_ALL_ORIGINS = False
     ALLOWED_HOSTS=os.environ.get('DJANGO_ALLOWED_HOSTS').split(",")
+
+# donat-pool script settings
+VER_TOKEN_CS = os.environ.get('VER_TOKEN_CS', "2ad1727329f49229089c470bcabc158a2344e149499614dba10cbfac")
+VER_TOKEN_TN = b"VerificationToken"
+THREAD_TOKEN_TN = b"FundraisingThreadToken"
+FUNDRAISING_SYSTEM_ADA_AMOUNT = 4_000_000

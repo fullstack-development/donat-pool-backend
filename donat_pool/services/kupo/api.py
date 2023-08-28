@@ -1,15 +1,11 @@
 import requests
 from rest_framework.response import Response
-from django.views import View
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework import status
-
-import json 
-
-THREAD_TOKEN_NAME="FundraisingThreadToken"
-VER_TOKEN_CURRENCY=""
-VER_TOKEN_NAME="VerificationToken"
+from .models import Value, Utxo, FundraisingInfo
+from django.conf import settings
+import itertools
 
 class KupoApiView(APIView):
 
@@ -26,7 +22,8 @@ class KupoApiView(APIView):
 
             if response.status_code == 200:
                 response_data = response.json()
-                self.parse_utxos_at(response_data)
+                utxos = list(map(self.parse_utxo, response_data))
+                fr = list(map(self.utxo_to_fundraising, utxos))
                 return Response({"msg": "OK"}, status=200)
 
             else:
@@ -37,7 +34,7 @@ class KupoApiView(APIView):
 
     def parse_utxos_at(self, utxosAtResponse):
         for utxo_data in utxosAtResponse:
-            utxo = self.parse_utxo(utxo_data)
+            return self.parse_utxo(utxo_data)
         
 
     def parse_utxo(self, utxo_data):
@@ -48,26 +45,13 @@ class KupoApiView(APIView):
         except KeyError as e:
             print(f"KeyError: {e}")
             return Response({"error": "Can't parse kupo utxos_at response"}, status=500)
+    
+    def utxo_to_fundraising(self, utxo):
+        value = utxo.value
+        thread_token = value.get_utxo_thread_token()
+        raisedAmt = value.coins - settings.FUNDRAISING_SYSTEM_ADA_AMOUNT
+        if thread_token == None:
+            return
+        print(thread_token.currencySymbol)
+        print(raisedAmt)
         
-class Value:
-    def __init__(self, coins, assets):
-        self.coins = coins
-        self.assets = assets
-
-class Utxo:
-    def __init__(self, value: Value, datum_hash, datum_type):
-        self.value = value
-        self.datum_hash = datum_hash
-        self.datum_type = datum_type
-
-class FundraisingInfo:
-    def __init__(self, creator, title, goal, raisedAmt, deadline, threadTokenCurrency, threadTokenName, isCompleted):
-        self.creator = creator
-        self.title = title
-        self.goal = goal
-        self.raisedAmt = raisedAmt
-        self.deadline = deadline
-        self.threadTokenCurrency = threadTokenCurrency
-        self.threadTokenName = threadTokenName
-        self.isCompleted = isCompleted
-

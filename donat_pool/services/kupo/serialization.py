@@ -1,16 +1,15 @@
 from builtins import bytes
 from pycardano.transaction import MultiAsset, ScriptHash, AssetName
+from django.conf import settings
 
 class Asset:
     def __init__(self, currencySymbol, tokenName):
         self.currencySymbol = currencySymbol
         self.tokenName = tokenName
 
-def split_hex_asset(hex_str):
-    try:
-        return hex_str.split(".")
-    except ValueError:
-        raise
+def get_thread_token(assets_dict):
+    cs = get_thread_currency_from_assets(assets_dict)
+    return Asset(cs, settings.THREAD_TOKEN_TN)
 
 def get_thread_currency_from_assets(assets_dict):
     multi_asset = make_multi_asset(assets_dict)
@@ -46,25 +45,34 @@ def get_thread_token_currency(multi_asset):
     except StopIteration:
         return thread_token.payload.hex()
 
-
 def is_ver_token(policy_id, asset_name, amount):
-    # TODO: read ver_token from config
-    ver_policy_id = ScriptHash(bytes.fromhex("2ad1727329f49229089c470bcabc158a2344e149499614dba10cbfac"))
-    ver_token_name = AssetName(b"VerificationToken")
+    ver_policy_id = ScriptHash(bytes.fromhex(settings.VER_TOKEN_CS))
+    ver_token_name = AssetName(settings.VER_TOKEN_TN)
     return policy_id == ver_policy_id and asset_name == ver_token_name and amount == 1
 
 def have_thread_token_name(policy_id, asset_name, amount):
-    # TODO: read thread token from config
-    thread_token_name=AssetName(b"FundraisingThreadToken")
+    thread_token_name=AssetName(settings.THREAD_TOKEN_TN)
     return asset_name == thread_token_name and amount == 1
 
-class VerTokenNotFound(Exception):
+def split_hex_asset(hex_str):
+    try:
+        return hex_str.split(".")
+    except ValueError:
+        raise
+
+class ValueException(Exception):
     pass
 
-class ThreadTokenNotFound(Exception):
+class CantSplitHexAsset(ValueException):
     pass
 
-class MultipleThreadTokensFound(Exception):
+class VerTokenNotFound(ValueException):
+    pass
+
+class ThreadTokenNotFound(ValueException):
+    pass
+
+class MultipleThreadTokensFound(ValueException):
     pass
 
 if __name__ == "__main__":

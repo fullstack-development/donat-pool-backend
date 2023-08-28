@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from donat_pool.services.kupo import KupoApiView
+from donat_pool.services.kupo.api import KupoApiView
 
 urlpatterns = [
     path('core/', include('donat_pool.core.urls')),
