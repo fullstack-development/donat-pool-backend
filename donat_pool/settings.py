@@ -144,6 +144,8 @@ else:
 
 # donat-pool script settings
 VER_TOKEN_CS = os.environ.get('VER_TOKEN_CS', "2ad1727329f49229089c470bcabc158a2344e149499614dba10cbfac")
+KUPO_SERVICE = "https://kupo.donat-pool.io/"
 VER_TOKEN_TN = b"VerificationToken"
 THREAD_TOKEN_TN = b"FundraisingThreadToken"
+FUNDRAISING_SCRIPT_ADDRESS = "addr_test1xzyyxy9s609346ckm5eyv2qn3s56zc8spajw654yxsrwwkuggvgtp57trt43dhfjgc5p8rpf59s0qrmya4f2gdqxuads6zfmy0"
 FUNDRAISING_SYSTEM_ADA_AMOUNT = 4_000_000

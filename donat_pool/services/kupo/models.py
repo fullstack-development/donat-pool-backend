@@ -1,4 +1,12 @@
 from .serialization import get_thread_token, ValueException
+from dataclasses import dataclass
+from pycardano import PlutusData, TransactionInput, RawPlutusData
+from datetime import datetime
+from pycardano.address import Address
+from pycardano.serialization import CBORSerializable
+from typing import Dict, List, Union
+from pycardano.serialization import IndefiniteList
+from pycardano.hash import *
 
 class Value:
     def __init__(self, coins, assets):
@@ -19,12 +27,12 @@ class Utxo:
         self.datum_type = datum_type
 
 class FundraisingInfo:
-    def __init__(self, creator, title, goal, raisedAmt, deadline, threadTokenCurrency, threadTokenName, isCompleted):
-        self.creator = creator
-        self.title = title
-        self.goal = goal
-        self.raisedAmt = raisedAmt
-        self.deadline = deadline
+    def __init__(self, title, goal, raisedAmt, deadline, threadTokenCurrency, threadTokenName, isCompleted):
+        # self.creator = creator #
+        self.title = title #
+        self.goal = goal #
+        self.raisedAmt = raisedAmt #
+        self.deadline = deadline #
         self.threadTokenCurrency = threadTokenCurrency
         self.threadTokenName = threadTokenName
         self.isCompleted = isCompleted
