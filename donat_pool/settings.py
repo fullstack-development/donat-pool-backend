@@ -39,7 +39,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -157,4 +156,4 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken'
 )
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-ALLOWED_HOSTS=["backend.donat-pool.io", "127.0.0.1"]
+ALLOWED_HOSTS=["backend.donat-pool.io", "127.0.0.1", "0afb-46-166-212-22.ngrok.io"]
