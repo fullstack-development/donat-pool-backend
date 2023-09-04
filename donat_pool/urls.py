@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from . import views
 
 urlpatterns = [
     path('core/', include('donat_pool.core.urls')),
     path('fundraisings/', include('donat_pool.fundraising.urls')),
+    path('get-csrf/', views.get_csrf),
     path('', admin.site.urls),
 ]
