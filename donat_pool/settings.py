@@ -157,5 +157,4 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken'
 )
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-CSRF_FAILURE_VIEW = 'donat_pool.views.csrf_failure'
 ALLOWED_HOSTS=["backend.donat-pool.io", "127.0.0.1"]
