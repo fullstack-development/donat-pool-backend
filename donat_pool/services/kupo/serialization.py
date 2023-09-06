@@ -1,14 +1,22 @@
 from builtins import bytes
 from pycardano.transaction import MultiAsset, ScriptHash, AssetName
 from django.conf import settings
-from pycardano import PlutusData, RawPlutusData
-from datetime import datetime
-from dataclasses import dataclass, field
+from pycardano import PlutusData
+from dataclasses import dataclass
 from pycardano.address import Address
-from pycardano.serialization import ArrayCBORSerializable
-from typing import Iterable, List, Optional, Tuple
-from pycardano.hash import TransactionId
-from pycardano.key import Key
+
+@dataclass
+class FundraisingDatum(PlutusData):
+    CONSTR_ID = 0
+
+    creatorPkh: bytes
+    tokenOrigin: PlutusData
+    frTitle: bytes
+    frAmount: int
+    frDeadline: int
+    frFee: int
+    managerAddress: PlutusData 
+
 
 class Asset:
     def __init__(self, currencySymbol, tokenName):
@@ -16,14 +24,11 @@ class Asset:
         self.tokenName = tokenName
 
 def get_thread_token(assets_dict):
-    cs = get_thread_currency_from_assets(assets_dict)
-    return Asset(cs, settings.THREAD_TOKEN_TN)
-
-def get_thread_currency_from_assets(assets_dict):
     multi_asset = make_multi_asset(assets_dict)
     if not ver_token_in_assets(multi_asset): 
         raise VerTokenNotFound
-    return get_thread_token_currency(multi_asset)
+    cs = get_thread_token_currency(multi_asset)
+    return Asset(cs, settings.THREAD_TOKEN_TN)
 
 def make_multi_asset(assets_dict):
     multi_asset = MultiAsset()
@@ -68,52 +73,30 @@ def split_hex_asset(hex_str):
     except ValueError:
         raise
 
-def deserialize_datum(datum):
-    return FundraisingDatum.from_cbor(datum)
+def deserialize_datum(datum_cbor):
+    return FundraisingDatum.from_cbor(datum_cbor)
+
+def deserialize_address(addr):
+    addr_cbor = addr.to_cbor_hex()
+    address = Address.from_primitive(addr_cbor)
+    return str(address)
 
 class ValueException(Exception):
-    pass
+    def __init__(self, exception_info):
+      self.exception_info = exception_info
 
-class CantSplitHexAsset(ValueException):
-    pass
+    def __str__(self):
+      return repr(self.exception_info)
 
 class VerTokenNotFound(ValueException):
-    pass
+    def __init__(self):
+      super().__init__("Verification token is not found")
 
 class ThreadTokenNotFound(ValueException):
-    pass
+    def __init__(self):
+      super().__init__("Thread token is not found")
 
 class MultipleThreadTokensFound(ValueException):
-    pass
-
-@dataclass
-class FundraisingDatum(PlutusData):
-    CONSTR_ID = 0
-
-    creatorPkh: bytes
-    tokenOrigin: PlutusData
-    frTitle: bytes
-    frAmount: int
-    frDeadline: int
-    frFee: int
-    managerAddress: PlutusData 
-
-if __name__ == "__main__":
-    datum_cbor = "d8799f581c7c7863fc6938a9007ce5b98847bdb88f4ee1f739dd022173d22931b1d8799fd8799f582029d4526ac0fc57efaa49bc4de384ecbb4bcada22d9b5ab9585867754fb265e04ff01ff5819446f6e61746520746f206665656420737472617920636174731a08f0d1801b0000018a2a48646f0ad8799fd8799f581c49d49d1715768d0b9fb498e60a7515e390c744330b91f4a1f6329afaffd8799fd8799fd8799f581c19ce8af5ab31ca45d7ab8edbd405f409be29499250ea1c4722920f60ffffffffff"
-    d = FundraisingDatum.from_cbor(datum_cbor)
-    print(d)
-    
-
-    # dict = {"2ad1727329f49229089c470bcabc158a2344e149499614dba10cbfac.566572696669636174696f6e546f6b656e": 1, "d803d5d21d6439c9b8834947c8ef65b9c685f2be23fc34ce1dba174a.46756e6472616973696e67546872656164546f6b656e": 1}
-    # thread_token_cs = get_thread_currency_from_assets(dict)
-    # print(thread_token_cs)
-
-# TODO: deserialize using dataclass
-# FundraisingDatum.from_cbor(d)
-
-# @dataclass
-# class TransactionInputDatum(PlutusData):
-#     transaction_id: str
-#     index: int
-
+    def __init__(self):
+      super().__init__("Multiple thread tokens with similar names are found")
 

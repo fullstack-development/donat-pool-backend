@@ -1,6 +1,7 @@
 import requests
 from .models import Value, Utxo
 from django.conf import settings
+from donat_pool.ext.list import map_by_list
 
 class KupoClient:
 
@@ -9,9 +10,10 @@ class KupoClient:
 
         try:
             response_data = self.get_from_kupo(utxos_at_url)
-            utxos = list(map(self.parse_utxo, response_data))
+            utxos = map_by_list(self.parse_utxo, response_data)
             return utxos
-        except KupoRequestError:
+        
+        except KupoApiError:
             raise
 
     def get_datum_by_hash(self, datum_hash):
@@ -20,7 +22,7 @@ class KupoClient:
         try:
             response_data = self.get_from_kupo(get_datum_url)
             return response_data.get("datum", None)
-        except KupoRequestError:
+        except KupoApiError:
             raise 
 
     def get_from_kupo(self, url):
@@ -31,10 +33,10 @@ class KupoClient:
                 response_data = response.json()
                 return response_data
             else:
-                raise KupoRequestError # pass error data
+                raise KupoErrorResponse(response)
             
         except requests.exceptions.RequestException as e:
-            raise KupoRequestError # pass error data
+            raise KupoErrorResponse(e)
 
     def parse_utxo(self, utxo_data):
         try:
@@ -43,7 +45,26 @@ class KupoClient:
             return utxo
         except KeyError as e:
             print(f"KeyError: {e}")
-            raise KupoRequestError # pass error data
+            raise UtxoParsingError(e, utxo)
+        
+class KupoApiError(Exception):
+    def __init__(self, exception_info):
+      self.exception_info = exception_info
 
-class KupoRequestError(Exception):
-    pass
+    def __str__(self):
+      return repr(self.exception_info)
+    
+class KupoRequestError(KupoApiError):
+    def __init__(self, resp):
+      super().__init__("Kupo respond with error: " + str(resp))
+
+class KupoErrorResponse(KupoApiError):
+    def __init__(self, e):
+      super().__init__("Error during Kupo request: " + str(e))
+
+class UtxoParsingError(KupoApiError):
+    def __init__(self, e, utxo):
+      super().__init__("Error in UTXO parsing: " + str(e) + " UTXO: " + str(utxo))
+
+
+    
