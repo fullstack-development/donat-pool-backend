@@ -141,3 +141,11 @@ if DEBUG:
 else:
     CORS_ALLOW_ALL_ORIGINS = False
     ALLOWED_HOSTS=os.environ.get('DJANGO_ALLOWED_HOSTS').split(",")
+
+# donat-pool script settings
+KUPO_SERVICE = "https://kupo.donat-pool.io/"
+FUNDRAISING_SCRIPT_ADDRESS = os.environ.get('FUNDRAISING_SCRIPT_ADDRESS', "addr_test1xzzdr8nqcs7qyhw4qdgm7c0jrrhh6g6xv6l528qxfjwag3uy6x0xp3puqfwa2q63haslyx800535ve4lg5wqvnya63rs6wdx69")
+VER_TOKEN_CS = os.environ.get('VER_TOKEN_CS', "95464e4f5afc90bfebb8bfece80b5cba98dc1c558cddddb7bcd081c1")
+VER_TOKEN_TN = b"VerificationToken"
+THREAD_TOKEN_TN = b"FundraisingThreadToken"
+FUNDRAISING_SYSTEM_ADA_AMOUNT = 4_000_000

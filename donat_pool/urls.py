@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from donat_pool.services.kupo.api import FundraisingInfoView
 
 urlpatterns = [
     path('core/', include('donat_pool.core.urls')),
     path('fundraisings/', include('donat_pool.fundraising.urls')),
+    path('fundraising-api/<str:action>/', FundraisingInfoView.as_view(), name='fundraising_api'),
     path('', admin.site.urls),
 ]
