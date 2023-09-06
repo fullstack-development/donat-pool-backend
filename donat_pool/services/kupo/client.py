@@ -2,6 +2,7 @@ import requests
 from .models import Value, Utxo
 from django.conf import settings
 from donat_pool.ext.list import map_by_list
+import logging
 
 class KupoClient:
 
@@ -44,7 +45,6 @@ class KupoClient:
             utxo = Utxo(value, utxo_data["datum_hash"], utxo_data["datum_type"])
             return utxo
         except KeyError as e:
-            print(f"KeyError: {e}")
             raise UtxoParsingError(e, utxo)
         
 class KupoApiError(Exception):

@@ -4,11 +4,12 @@ from rest_framework.decorators import action
 from rest_framework import status
 from .models import FundraisingInfo
 from django.conf import settings
-from .client import KupoClient, KupoRequestError
+from .client import KupoClient, KupoApiError
 from .serialization import deserialize_datum, deserialize_address
 from rest_framework import serializers
 from donat_pool.ext.time import current_time_ms
 from donat_pool.ext.list import clean_list, map_by_list
+import logging
 
 class FundraisingInfoView(APIView):
     def __init__(self, **kwargs):
@@ -23,9 +24,12 @@ class FundraisingInfoView(APIView):
     def all_projects(self, request):
         try:
             utxos = self.kupo_client.utxos_at(settings.FUNDRAISING_SCRIPT_ADDRESS)
-        except KupoRequestError as e:
+        except KupoApiError as e:
+            logging.error(str(e))
             return Response(
-                {"error": f"Request to Kupo failed: {str(e)}"}, 
+                {"error": "Kupo API error",
+                 "description": str(e),
+                }, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         
@@ -40,7 +44,18 @@ class FundraisingInfoView(APIView):
         if thread_token == None:
             return
         
-        datum_encoded = self.kupo_client.get_datum_by_hash(utxo.datum_hash)
+        try:
+            datum_encoded = self.kupo_client.get_datum_by_hash(utxo.datum_hash)
+
+        except KupoApiError as e:
+            logging.error(str(e))
+            return Response(
+                {"error": "Kupo API error",
+                 "description": str(e),
+                }, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        
         datum_fields = deserialize_datum(datum_encoded)
 
         creator = None
@@ -51,9 +66,9 @@ class FundraisingInfoView(APIView):
         thread_token_name = thread_token.tokenName.decode('ascii')
 
         now = current_time_ms()
-        isCompleted = raised_amt >= goal or now >= deadline
+        is_completed = raised_amt >= goal or now >= deadline
         
-        frInfo = FundraisingInfo(creator, title, goal, raised_amt, deadline, thread_token_currency, thread_token_name, isCompleted)
+        frInfo = FundraisingInfo(creator, title, goal, raised_amt, deadline, thread_token_currency, thread_token_name, is_completed)
         fr_serialized =  FundraisingSerializer(frInfo)
         return fr_serialized.data
         

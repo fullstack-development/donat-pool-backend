@@ -26,7 +26,7 @@ class Asset:
 def get_thread_token(assets_dict):
     multi_asset = make_multi_asset(assets_dict)
     if not ver_token_in_assets(multi_asset): 
-        raise VerTokenNotFound
+        raise VerTokenNotFound(assets_dict)
     cs = get_thread_token_currency(multi_asset)
     return Asset(cs, settings.THREAD_TOKEN_TN)
 
@@ -51,10 +51,10 @@ def get_thread_token_currency(multi_asset):
     try:
         thread_token = next(iterable)
     except StopIteration:
-        raise ThreadTokenNotFound
+        raise ThreadTokenNotFound(assets)
     try:
         next(iterable)
-        raise MultipleThreadTokensFound
+        raise MultipleThreadTokensFound(assets)
     except StopIteration:
         return thread_token.payload.hex()
 
@@ -89,14 +89,13 @@ class ValueException(Exception):
       return repr(self.exception_info)
 
 class VerTokenNotFound(ValueException):
-    def __init__(self):
-      super().__init__("Verification token is not found")
+    def __init__(self, assets):
+      super().__init__("Verification token is not found: " + str(assets))
 
 class ThreadTokenNotFound(ValueException):
-    def __init__(self):
-      super().__init__("Thread token is not found")
+    def __init__(self, assets):
+      super().__init__("Thread token is not found: " + str(assets))
 
 class MultipleThreadTokensFound(ValueException):
-    def __init__(self):
-      super().__init__("Multiple thread tokens with similar names are found")
-
+    def __init__(self, assets):
+      super().__init__("Multiple thread tokens with similar names are found: " + str(assets))

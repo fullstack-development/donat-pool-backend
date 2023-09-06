@@ -1,5 +1,6 @@
 from .serialization import get_thread_token, ValueException
 from pycardano.hash import *
+import logging
 
 class Value:
     def __init__(self, coins, assets):
@@ -11,7 +12,7 @@ class Value:
             thread_token = get_thread_token(self.assets)
             return thread_token
         except ValueException as e:
-            print(e.exception_info)
+            logging.warning(str(e))
             return None
 
 class Utxo:
