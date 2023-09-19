@@ -3,7 +3,8 @@ from .models import (
     Category, 
     Tag,
     SiteSettings,
-    Feedback
+    Feedback,
+    UnwantedWord
 )
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -40,8 +41,12 @@ class FeedbackAdmin(admin.ModelAdmin):
         'processed',
         'created_at',
         )
+    
+class UnwantedWordAdmin(admin.ModelAdmin):
+    search_fields = ['word',]
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(SiteSettings, SiteSettingsAdmin)
 admin.site.register(Feedback, FeedbackAdmin)
+admin.site.register(UnwantedWord, UnwantedWordAdmin)
