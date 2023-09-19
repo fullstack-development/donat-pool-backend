@@ -65,3 +65,13 @@ class Feedback(models.Model):
          
     def __str__(self):
         return self.name
+
+class UnwantedWord(models.Model):
+    word = models.CharField(max_length=500, blank=False, null=False)
+
+    class Meta:
+        verbose_name = "Unwanted word"
+        verbose_name_plural = "Unwanted words"
+         
+    def __str__(self):
+        return self.word

@@ -1,6 +1,7 @@
 asgiref==3.7.2
 asn1crypto==1.5.1
 attrs==23.1.0
+better_profanity==0.7.0
 blockfrost-python==0.5.3
 cbor2==5.4.6
 certifi==2023.5.7

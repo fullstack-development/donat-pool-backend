@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from donat_pool.services.kupo.api import FundraisingInfoView
+from donat_pool.services.moderation.api import ModerationView
 
 urlpatterns = [
     path('core/', include('donat_pool.core.urls')),
     path('fundraisings/', include('donat_pool.fundraising.urls')),
     path('fundraising-api/<str:action>/', FundraisingInfoView.as_view(), name='fundraising_api'),
+    path('moderation-api/<str:action>/', ModerationView.as_view(), name='moderation_api'),
     path('', admin.site.urls),
 ]
